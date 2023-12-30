@@ -13,7 +13,7 @@ export class ErrorMiddleware implements NestMiddleware {
     next: NextFunction /*eslint-disable-line */,
   ): any {
     res.status(error.status || 500).json({
-      message: error.message,
+      message: error.message || 'Missed an error message somewhere',
       stack: error.stack,
     });
   }
