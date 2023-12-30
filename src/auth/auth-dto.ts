@@ -7,6 +7,11 @@ export class BodyType {
   password: string;
 }
 
+export class LoginType {
+  email: string;
+  password: string;
+}
+
 export class FirstNameValidation {
   @IsNotEmpty({ message: 'First name required' })
   first_name: string;

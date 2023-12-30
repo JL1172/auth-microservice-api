@@ -6,8 +6,9 @@ import {
   RegisterService,
   UserProcesser,
   ValidateUnique,
-} from './auth/auth-service';
+} from './auth/auth-reg-service';
 import { PrismaService } from './global-providers/prisma-service';
+import { LoginBodyVerification } from './auth/auth-log-service';
 
 @Module({
   imports: [],
@@ -18,5 +19,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ErrorMiddleware).forRoutes('*');
     consumer.apply(RegisterService, ValidateUnique).forRoutes('auth/register');
+    consumer.apply(LoginBodyVerification).forRoutes('auth/login');
   }
 }
