@@ -57,32 +57,17 @@ export class ValidateUnique implements NestMiddleware {
       const result: Promise<BodyType | null> = await this.prisma.search(
         req.body,
       );
-      if (result[0] === null && result[1] === null) {
+      const bool: boolean = result[1] && result[2];
+      if (result[0] === null && !bool) {
         next();
       } else {
-        if (
-          result[0] === null &&
-          result[1] &&
-          result[1].last_name === req.body.last_name
-        ) {
-          throw new HttpException(
-            'Account already exists',
-            HttpStatus.UNPROCESSABLE_ENTITY,
-          );
-        }
-        if (
-          result[0] ||
-          (result[1] && result[1].last_name === req.body.last_name)
-        ) {
-          throw new HttpException(
-            'Account already exists',
-            HttpStatus.UNPROCESSABLE_ENTITY,
-          );
-        }
+        throw new HttpException(
+          'Account already exists',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
       }
     } catch (err) {
-      console.log('error', err);
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+      throw new HttpException('Account already exists', HttpStatus.BAD_REQUEST);
     }
   }
 }

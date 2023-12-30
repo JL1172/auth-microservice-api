@@ -9,16 +9,23 @@ export class PrismaService {
     this.prisma = new PrismaClient();
   }
   async search(user: BodyType): Promise<any> {
-    const { email, first_name } = user;
+    const { email } = user;
     const result = await this.prisma.user.findUnique({
       where: {
         email: email,
       },
     });
-    const result_two = await this.prisma.user.findFirst({
-      where: { first_name: first_name },
+    const first = await this.prisma.user.findFirst({
+      where: {
+        first_name: user.first_name,
+      },
     });
-    return [result, result_two];
+    const last = await this.prisma.user.findFirst({
+      where: {
+        last_name: user.last_name,
+      },
+    });
+    return [result, first, last];
   }
   async add_user(user: BodyType): Promise<any> {
     await this.prisma.user.create({ data: user });
