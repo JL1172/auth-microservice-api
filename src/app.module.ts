@@ -2,17 +2,21 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ErrorMiddleware } from './global-providers/error-middleware';
 import { AuthenticationController } from './auth/auth-controller';
-import { RegisterService } from './auth/auth-service';
+import {
+  RegisterService,
+  UserProcesser,
+  ValidateUnique,
+} from './auth/auth-service';
 import { PrismaService } from './global-providers/prisma-service';
 
 @Module({
   imports: [],
   controllers: [AppController, AuthenticationController],
-  providers: [PrismaService],
+  providers: [PrismaService, UserProcesser],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ErrorMiddleware).forRoutes('*');
-    consumer.apply(RegisterService).forRoutes('auth/register');
+    consumer.apply(RegisterService, ValidateUnique).forRoutes('auth/register');
   }
 }

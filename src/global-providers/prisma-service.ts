@@ -20,4 +20,12 @@ export class PrismaService {
     });
     return [result, result_two];
   }
+  async add_user(user: BodyType): Promise<any> {
+    await this.prisma.user.create({ data: user });
+    return await this.prisma.user.findUnique({
+      where: {
+        email: user.email,
+      },
+    });
+  }
 }
