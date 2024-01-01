@@ -12,11 +12,13 @@ import {
   LoginBodyVerification,
   VerifyUserExists,
 } from './auth/auth-log-service';
+import { TokenService } from './auth/token-service';
+import { Token_Bundler } from './auth/token-bunder-service';
 
 @Module({
   imports: [],
   controllers: [AppController, AuthenticationController],
-  providers: [PrismaService, UserProcesser],
+  providers: [PrismaService, UserProcesser, TokenService, Token_Bundler],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

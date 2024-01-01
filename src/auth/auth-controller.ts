@@ -2,10 +2,14 @@ import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { BodyType, LoginType } from './auth-dto';
 import { UserProcesser } from './auth-reg-service';
+import { Token_Bundler } from './token-bunder-service';
 
 @Controller('auth')
 export class AuthenticationController {
-  constructor(private readonly user_functions: UserProcesser) {}
+  constructor(
+    private readonly user_functions: UserProcesser,
+    private readonly token_bundler: Token_Bundler,
+  ) {}
   @Get('sanity')
   sanity(@Res({ passthrough: true }) res: Response): any {
     res.status(200).json({ message: 'hello world' });
@@ -23,7 +27,8 @@ export class AuthenticationController {
   async login(
     @Body() body: LoginType,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<void> {
-    console.log('login endpoint');
+  ): Promise<any> {
+    const { token }: { token: string } = this.token_bundler.parseToken();
+    res.status(200).json({ message: 'Welcome back', token: token });
   }
 }

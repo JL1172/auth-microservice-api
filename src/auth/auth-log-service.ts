@@ -10,6 +10,7 @@ import { BodyType, EmailValidation, PasswordValidation } from './auth-dto';
 import { validateOrReject } from 'class-validator';
 import { PrismaService } from 'src/global-providers/prisma-service';
 import * as bcrypt from 'bcryptjs';
+import { Token_Bundler } from './token-bunder-service';
 
 @Injectable()
 export class LoginBodyVerification implements NestMiddleware {
@@ -38,12 +39,14 @@ export class LoginBodyVerification implements NestMiddleware {
 
 @Injectable()
 export class VerifyUserExists implements NestMiddleware {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly token_bundler: Token_Bundler,
+  ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     try {
-      const result: Promise<[any, any, any]> = await this.prisma.search(
-        req.body,
-      );
+      const result: Promise<[BodyType, BodyType, BodyType]> =
+        await this.prisma.search(req.body);
       const user: null | BodyType = result[0];
       if (!user) {
         throw new HttpException(
@@ -52,7 +55,8 @@ export class VerifyUserExists implements NestMiddleware {
         );
       } else {
         if (bcrypt.compareSync(req.body.password, user.password)) {
-          console.log('authorized', req.body.password, user.password);
+          this.token_bundler.addUser(user);
+          next();
         } else {
           throw new HttpException(
             'Invalid Email or password.',
