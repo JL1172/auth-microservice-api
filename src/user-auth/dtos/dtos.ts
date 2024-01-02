@@ -44,3 +44,17 @@ export class LoginBodyType {
   @IsNotEmpty({ message: 'Password Required' })
   password: string;
 }
+
+export type UserPayloadTypeJwtReference = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+};
+
+export class JwtTokenType {
+  @IsString({ message: 'Invalid Format on Token' })
+  @IsNotEmpty({ message: 'Token Required' })
+  token: string;
+}

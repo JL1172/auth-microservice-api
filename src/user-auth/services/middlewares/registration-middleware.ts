@@ -5,7 +5,7 @@ import {
   NestMiddleware,
 } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { RegisterBodyType } from '../../dtos/dtos';
+import { RegisterBodyType, UserPayloadTypeJwtReference } from '../../dtos/dtos';
 import { validateOrReject } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import * as validator from 'validator';
@@ -72,9 +72,8 @@ export class VerfiyUniqueUserMiddleware implements NestMiddleware {
     next: NextFunction /*eslint-disable-line */,
   ) {
     try {
-      const result: Promise<null | RegisterBodyType[]> = await this.prisma.find(
-        req.body,
-      );
+      const result: Promise<UserPayloadTypeJwtReference[]> =
+        await this.prisma.find(req.body);
       if (result[0]) {
         throw new HttpException(
           'Account Already Exists',

@@ -17,12 +17,29 @@ import {
   CreateUserContainerProvider,
   PasswordHashProvider,
 } from './user-auth/services/providers/registration-providers';
-import { LoginBodyValidationMiddleware } from './user-auth/services/middlewares/login-middleware';
+import {
+  CompareUserPassword,
+  LoginBodySanitationMiddleware,
+  LoginBodyValidationMiddleware,
+  VerifyUserExistsMiddleware,
+} from './user-auth/services/middlewares/login-middleware';
+import {
+  JwtBuilderProvider,
+  JwtHolderProvider,
+  UserStorageProvider,
+} from './user-auth/services/providers/login-providers';
 
 @Module({
   imports: [],
   controllers: [AppController, UserAuthController],
-  providers: [PrismaService, PasswordHashProvider, CreateUserContainerProvider],
+  providers: [
+    PrismaService,
+    PasswordHashProvider,
+    CreateUserContainerProvider,
+    UserStorageProvider,
+    JwtBuilderProvider,
+    JwtHolderProvider,
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
@@ -44,6 +61,13 @@ export class AppModule implements NestModule {
         PasswordHasher,
       )
       .forRoutes('/api/auth/register');
-    consumer.apply(LoginBodyValidationMiddleware).forRoutes('/api/auth/login');
+    consumer
+      .apply(
+        LoginBodyValidationMiddleware,
+        LoginBodySanitationMiddleware,
+        VerifyUserExistsMiddleware,
+        CompareUserPassword,
+      )
+      .forRoutes('/api/auth/login');
   }
 }
