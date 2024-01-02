@@ -6,6 +6,7 @@ import * as hpp from 'hpp';
 import * as cors from 'cors';
 import helmet from 'helmet';
 import { RateLimitMiddleware } from './global-middleware/RateLimitMiddleware';
+import { BodyValidationMiddleware } from './user-auth/services/registration-middleware';
 
 @Module({
   imports: [],
@@ -17,5 +18,6 @@ export class AppModule implements NestModule {
     consumer
       .apply(ErrorMiddleware, RateLimitMiddleware, hpp(), cors(), helmet())
       .forRoutes('*');
+    consumer.apply(BodyValidationMiddleware).forRoutes('/api/auth/register');
   }
 }

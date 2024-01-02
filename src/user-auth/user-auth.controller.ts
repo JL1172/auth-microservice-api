@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import { LoginBodyType, RegisterBodyType } from './dtos';
+import { LoginBodyType, RegisterBodyType } from './dtos/dtos';
 
 @Controller('api/auth')
 export class UserAuthController {
