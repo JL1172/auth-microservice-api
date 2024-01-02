@@ -9,6 +9,7 @@ import { RegisterBodyType } from '../dtos/dtos';
 import { validateOrReject } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import * as validator from 'validator';
+import { PrismaService } from 'src/global-providers/prisma-service';
 
 @Injectable()
 export class BodyValidationMiddleware implements NestMiddleware {
@@ -53,9 +54,31 @@ export class BodySanitationMiddleware implements NestMiddleware {
       next();
     } catch (err) {
       throw new HttpException(
-        'Error sanitizing data',
+        `Error sanitizing data:${err}`,
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
+    }
+  }
+}
+
+@Injectable()
+export class VerfiyUniqueUserMiddleware implements NestMiddleware {
+  constructor(private readonly prisma: PrismaService) {}
+  async use(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result: Promise<null | RegisterBodyType> = await this.prisma.find(
+        req.body,
+      );
+      if (result) {
+        throw new HttpException(
+          'Account Already Exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      } else {
+        next();
+      }
+    } catch (err) {
+      throw new HttpException(`Error: ${err}`, HttpStatus.UNPROCESSABLE_ENTITY);
     }
   }
 }
