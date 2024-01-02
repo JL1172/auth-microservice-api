@@ -17,6 +17,7 @@ import {
   CreateUserContainerProvider,
   PasswordHashProvider,
 } from './user-auth/services/providers/registration-providers';
+import { LoginBodyValidationMiddleware } from './user-auth/services/middlewares/login-middleware';
 
 @Module({
   imports: [],
@@ -33,7 +34,6 @@ export class AppModule implements NestModule {
         cors(),
         helmet.contentSecurityPolicy(),
         helmet.hsts(),
-        helmet(),
       )
       .forRoutes('*');
     consumer
@@ -44,5 +44,6 @@ export class AppModule implements NestModule {
         PasswordHasher,
       )
       .forRoutes('/api/auth/register');
+    consumer.apply(LoginBodyValidationMiddleware).forRoutes('/api/auth/login');
   }
 }

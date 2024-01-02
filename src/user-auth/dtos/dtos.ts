@@ -35,7 +35,12 @@ export class RegisterBodyType {
   @IsEmail({}, { message: 'Invalid Email' })
   email: string;
 }
-export type LoginBodyType = {
+export class LoginBodyType {
+  @IsEmail({}, { message: 'Invalid Email' })
+  @IsString({ message: 'Invalid format on Email' })
+  @IsNotEmpty({ message: 'Email Required' })
   email: string;
+  @IsString({ message: 'Invalid Format on Password' })
+  @IsNotEmpty({ message: 'Password Required' })
   password: string;
-};
+}
