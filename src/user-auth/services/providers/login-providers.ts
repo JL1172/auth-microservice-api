@@ -3,7 +3,7 @@ import {
   JwtTokenType,
   UserPayloadTypeJwtReference,
 } from 'src/user-auth/dtos/dtos';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserStorageProvider {
@@ -21,7 +21,7 @@ export class UserStorageProvider {
 
 @Injectable()
 export class JwtBuilderProvider {
-  private readonly jwt: typeof jwt = jwt;
+  private readonly jwt = jwt;
   constructor() {
     this.jwt = jwt;
   }
@@ -34,7 +34,12 @@ export class JwtBuilderProvider {
     const options: { expiresIn: string } = {
       expiresIn: '1d',
     };
-    return this.jwt.sign(payload, process.env.JWT_SECRET, options);
+    const token: string = this.jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      options,
+    );
+    return token;
   }
 }
 
@@ -45,7 +50,7 @@ export class JwtHolderProvider {
     this.jwt_housing = [];
   }
   storeJwt(jwt: JwtTokenType): void {
-    this.jwt_housing.push(jwt);
+    this.jwt_housing[0] = jwt;
   }
   readJwt(): typeof this.jwt_housing {
     return this.jwt_housing;
