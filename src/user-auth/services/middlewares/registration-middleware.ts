@@ -5,11 +5,13 @@ import {
   NestMiddleware,
 } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { RegisterBodyType } from '../dtos/dtos';
+import { RegisterBodyType } from '../../dtos/dtos';
 import { validateOrReject } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import * as validator from 'validator';
 import { PrismaService } from 'src/global-providers/prisma-service';
+import { PasswordHashProvider } from '../providers/registration-providers';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class BodyValidationMiddleware implements NestMiddleware {
@@ -55,7 +57,7 @@ export class BodySanitationMiddleware implements NestMiddleware {
     } catch (err) {
       throw new HttpException(
         `Error sanitizing data:${err}`,
-        HttpStatus.UNPROCESSABLE_ENTITY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -64,21 +66,57 @@ export class BodySanitationMiddleware implements NestMiddleware {
 @Injectable()
 export class VerfiyUniqueUserMiddleware implements NestMiddleware {
   constructor(private readonly prisma: PrismaService) {}
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(
+    req: Request,
+    res: Response /*eslint-disable-line */,
+    next: NextFunction /*eslint-disable-line */,
+  ) {
     try {
-      const result: Promise<null | RegisterBodyType> = await this.prisma.find(
+      const result: Promise<null | RegisterBodyType[]> = await this.prisma.find(
         req.body,
       );
-      if (result) {
+      if (result[0]) {
         throw new HttpException(
           'Account Already Exists',
           HttpStatus.BAD_REQUEST,
         );
       } else {
-        next();
+        if (
+          result[1] &&
+          result[1].first_name === req.body.first_name &&
+          result[1].last_name === req.body.last_name
+        ) {
+          throw new HttpException(
+            'Account Already Exists',
+            HttpStatus.BAD_REQUEST,
+          );
+        } else {
+          next();
+        }
       }
     } catch (err) {
-      throw new HttpException(`Error: ${err}`, HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+}
+
+@Injectable()
+export class PasswordHasher implements NestMiddleware {
+  constructor(private passwordProvider: PasswordHashProvider) {}
+  async use(req: Request, res: Response, next: NextFunction) {
+    try {
+      const body: RegisterBodyType = req.body;
+      const hashedPassword: string = bcrypt.hashSync(
+        body.password,
+        Number(process.env.BCRYPT_ROUNDS),
+      );
+      this.passwordProvider.storePassword(hashedPassword);
+      next();
+    } catch (err) {
+      throw new HttpException(
+        `Error: ${err}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

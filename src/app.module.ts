@@ -9,25 +9,39 @@ import { RateLimitMiddleware } from './global-middleware/RateLimitMiddleware';
 import {
   BodySanitationMiddleware,
   BodyValidationMiddleware,
+  PasswordHasher,
   VerfiyUniqueUserMiddleware,
-} from './user-auth/services/registration-middleware';
+} from './user-auth/services/middlewares/registration-middleware';
 import { PrismaService } from './global-providers/prisma-service';
+import {
+  CreateUserContainerProvider,
+  PasswordHashProvider,
+} from './user-auth/services/providers/registration-providers';
 
 @Module({
   imports: [],
   controllers: [AppController, UserAuthController],
-  providers: [PrismaService],
+  providers: [PrismaService, PasswordHashProvider, CreateUserContainerProvider],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(ErrorMiddleware, RateLimitMiddleware, hpp(), cors(), helmet())
+      .apply(
+        ErrorMiddleware,
+        RateLimitMiddleware,
+        hpp(),
+        cors(),
+        helmet.contentSecurityPolicy(),
+        helmet.hsts(),
+        helmet(),
+      )
       .forRoutes('*');
     consumer
       .apply(
         BodyValidationMiddleware,
         BodySanitationMiddleware,
         VerfiyUniqueUserMiddleware,
+        PasswordHasher,
       )
       .forRoutes('/api/auth/register');
   }
