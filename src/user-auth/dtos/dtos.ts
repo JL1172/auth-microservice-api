@@ -25,7 +25,10 @@ export class RegisterBodyType {
   last_name: string;
   @IsNotEmpty({ message: 'Password Required' })
   @MinLength(8, { message: 'Password Must Be Longer Than 8 Characters' })
-  @IsStrongPassword({}, { message: 'Weak Password' } as ValidationOptions)
+  @IsStrongPassword({}, {
+    message:
+      'Password Requires: Uppercase Letter, Lowercase Letter, Special Character, Number',
+  } as ValidationOptions)
   @IsString({ message: 'Incorrect Format on Password' })
   password: string;
   @IsString({ message: 'Incorrect Format on Email' })
