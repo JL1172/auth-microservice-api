@@ -8,12 +8,12 @@ export class ErrorMiddleware implements NestMiddleware {
   }
   catch(
     error: any,
-    req: Request,
     res: Response,
-    next: NextFunction /*eslint-disable-line */,
-  ): any {
+    req: Request, /*eslint-disable-line*/
+    next: NextFunction /*eslint-disable-line*/,
+  ) {
     res.status(error.status || 500).json({
-      message: error.message || 'Missed an error message somewhere',
+      message: error.message || 'Error message: 500',
       stack: error.stack,
     });
   }

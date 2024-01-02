@@ -1,31 +1,21 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { ErrorMiddleware } from './global-providers/error-middleware';
-import { AuthenticationController } from './auth/auth-controller';
-import {
-  RegisterService,
-  UserProcesser,
-  ValidateUnique,
-} from './auth/auth-reg-service';
-import { PrismaService } from './global-providers/prisma-service';
-import {
-  LoginBodyVerification,
-  VerifyUserExists,
-} from './auth/auth-log-service';
-import { TokenService } from './auth/token-service';
-import { Token_Bundler } from './auth/token-bunder-service';
+import { ErrorMiddleware } from './global-middleware/ErrorMiddleware';
+import { UserAuthController } from './user-auth/user-auth.controller';
+import * as hpp from 'hpp';
+import * as cors from 'cors';
+import helmet from 'helmet';
+import { RateLimitMiddleware } from './global-middleware/RateLimitMiddleware';
 
 @Module({
   imports: [],
-  controllers: [AppController, AuthenticationController],
-  providers: [PrismaService, UserProcesser, TokenService, Token_Bundler],
+  controllers: [AppController, UserAuthController],
+  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ErrorMiddleware).forRoutes('*');
-    consumer.apply(RegisterService, ValidateUnique).forRoutes('auth/register');
     consumer
-      .apply(LoginBodyVerification, VerifyUserExists)
-      .forRoutes('auth/login');
+      .apply(ErrorMiddleware, RateLimitMiddleware, hpp(), cors(), helmet())
+      .forRoutes('*');
   }
 }
