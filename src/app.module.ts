@@ -6,7 +6,7 @@ import * as cors from 'cors';
 import helmet from 'helmet';
 import { RateLimitMiddleware } from './global-middleware/RateLimitMiddleware';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AuthModule } from './user-auth/auth.module';
+import { AuthModule } from './auth-module/auth.module';
 
 @Module({
   imports: [ScheduleModule.forRoot(), AuthModule],

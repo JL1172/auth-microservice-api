@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as chalk from 'chalk';
 import { PrismaService } from 'src/global-providers/prisma-service';
-import { InstanceOfTokenExpType } from 'src/user-auth/dtos/dtos';
+import { InstanceOfTokenExpType } from 'src/auth-module/dtos/dtos';
 
 @Injectable()
 export class QueryExpiredToken {

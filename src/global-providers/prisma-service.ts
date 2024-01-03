@@ -6,7 +6,7 @@ import {
   LoginBodyType,
   RegisterBodyType,
   UserPayloadTypeJwtReference,
-} from 'src/user-auth/dtos/dtos';
+} from 'src/auth-module/dtos/dtos';
 
 @Injectable()
 export class PrismaService {
