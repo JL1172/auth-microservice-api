@@ -26,8 +26,7 @@ export class UserAuthController {
     body.password = this.passwordStorage.readPassword();
     await this.third_party_create.add_user_to_db(body);
     res.status(201).json({
-      message:
-        'SuccesSfully created user, remember to delete this feature later',
+      message: 'Successfully created user.',
     });
   }
   @Post('login')
@@ -40,6 +39,6 @@ export class UserAuthController {
   async logout(@Res({ passthrough: true }) res: Response): Promise<any> {
     const payload = this.finalized_payload.read_token();
     await this.prisma.insertJwt(payload);
-    res.status(201).json({ message: 'Token Successfully Blacklisted' });
+    res.status(201).json({ message: 'Token Successfully Blacklisted.' });
   }
 }
