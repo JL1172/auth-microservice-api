@@ -30,9 +30,8 @@ export class PrismaService {
       await this.prisma.user.findUnique({ where: { username: user.username } });
     return [emailResult, nameResult, usernameResult];
   }
-  async create(user: RegisterBodyType): Promise<any> {
+  async create(user: RegisterBodyType): Promise<void> {
     await this.prisma.user.create({ data: user });
-    return await this.prisma.user.findUnique({ where: { email: user.email } });
   }
   async findForLogin(
     user: LoginBodyType,

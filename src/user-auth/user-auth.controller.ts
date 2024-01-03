@@ -24,12 +24,10 @@ export class UserAuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
     body.password = this.passwordStorage.readPassword();
-    const result: Promise<string> =
-      await this.third_party_create.add_user_to_db(body);
+    await this.third_party_create.add_user_to_db(body);
     res.status(201).json({
       message:
         'SuccesSfully created user, remember to delete this feature later',
-      data: result,
     });
   }
   @Post('login')
