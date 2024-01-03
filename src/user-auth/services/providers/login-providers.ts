@@ -12,7 +12,7 @@ export class UserStorageProvider {
     this.user = [];
   }
   storeUser(user_to_store: UserPayloadTypeJwtReference): void {
-    this.user.push(user_to_store);
+    this.user[0] = user_to_store;
   }
   readUser(): UserPayloadTypeJwtReference {
     return this.user[0];
@@ -26,10 +26,16 @@ export class JwtBuilderProvider {
     this.jwt = jwt;
   }
   createJwt(user_payload: UserPayloadTypeJwtReference) {
-    const payload: { subject: number; email: string; full_name: string[] } = {
+    const payload: {
+      subject: number;
+      email: string;
+      full_name: string[];
+      username: string;
+    } = {
       subject: user_payload.id,
       email: user_payload.email,
       full_name: [user_payload.first_name, user_payload.last_name],
+      username: user_payload.username,
     };
     const options: { expiresIn: string } = {
       expiresIn: '1d',

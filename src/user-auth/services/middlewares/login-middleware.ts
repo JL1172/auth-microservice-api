@@ -50,8 +50,8 @@ export class LoginBodySanitationMiddleware implements NestMiddleware {
   }
   async use(req: Request, res: Response, next: NextFunction) {
     try {
-      const keys: string[] = ['email', 'password'];
-      const body: any = req.body;
+      const keys: string[] = ['username', 'password'];
+      const body: LoginBodyType = req.body;
       for (const key of keys) {
         body[key] = this.validator.default.blacklist(
           body[key],
@@ -60,7 +60,6 @@ export class LoginBodySanitationMiddleware implements NestMiddleware {
         body[key] = this.validator.default.escape(body[key]);
         body[key] = this.validator.default.trim(body[key]);
       }
-      body.email = this.validator.default.normalizeEmail(body.email);
       next();
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -96,17 +95,20 @@ export class VerifyUserExistsMiddleware implements NestMiddleware {
 
 @Injectable()
 export class CompareUserPassword implements NestMiddleware {
+  private readonly bcrypt = bcrypt;
   constructor(
     private readonly user_storage: UserStorageProvider,
     private readonly jwt_builder: JwtBuilderProvider,
     private jwt_housing: JwtHolderProvider,
-  ) {}
+  ) {
+    this.bcrypt = bcrypt;
+  }
   async use(req: Request, res: Response, next: NextFunction) {
     try {
       const body: LoginBodyType = req.body;
       const userInStorage: UserPayloadTypeJwtReference =
         this.user_storage.readUser();
-      if (bcrypt.compareSync(body.password, userInStorage.password)) {
+      if (this.bcrypt.compareSync(body.password, userInStorage.password)) {
         const token: string = this.jwt_builder.createJwt(userInStorage);
         this.jwt_housing.storeJwt({ token });
         next();

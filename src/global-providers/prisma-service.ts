@@ -13,6 +13,7 @@ export class PrismaService {
     this.prisma = new PrismaClient();
   }
   async find(user: RegisterBodyType): Promise<any> {
+    //!might be a problem
     const emailResult: UserPayloadTypeJwtReference =
       await this.prisma.user.findUnique({
         where: {
@@ -23,13 +24,19 @@ export class PrismaService {
       await this.prisma.user.findFirst({
         where: { first_name: user.first_name },
       });
-    return [emailResult, nameResult];
+    const usernameResult: UserPayloadTypeJwtReference =
+      await this.prisma.user.findUnique({ where: { username: user.username } });
+    return [emailResult, nameResult, usernameResult];
   }
   async create(user: RegisterBodyType): Promise<any> {
     await this.prisma.user.create({ data: user });
     return await this.prisma.user.findUnique({ where: { email: user.email } });
   }
-  async findForLogin(user: LoginBodyType): Promise<any> {
-    return await this.prisma.user.findUnique({ where: { email: user.email } });
+  async findForLogin(
+    user: LoginBodyType,
+  ): Promise<UserPayloadTypeJwtReference> {
+    return await this.prisma.user.findUnique({
+      where: { username: user.username },
+    });
   }
 }

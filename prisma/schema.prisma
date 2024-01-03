@@ -12,10 +12,17 @@ datasource db {
 
 model User {
   id         Int    @id @default(autoincrement())
+  username   String @unique
   first_name String
   last_name  String
   email      String @unique
   password   String
 
   @@unique([first_name, last_name])
+}
+
+model BlacklistJwt {
+  id              Int      @id @default(autoincrement())
+  token           String   @unique
+  expiration_time DateTime
 }

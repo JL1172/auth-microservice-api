@@ -43,7 +43,13 @@ export class BodySanitationMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     try {
       const body: any = req.body;
-      const keys: string[] = ['email', 'first_name', 'last_name', 'password'];
+      const keys: string[] = [
+        'email',
+        'first_name',
+        'last_name',
+        'password',
+        'username',
+      ];
       keys.forEach((n): void => {
         body[n] = this.validator.default.trim(body[n]);
         body[n] = this.validator.default.escape(body[n]);
@@ -74,7 +80,7 @@ export class VerfiyUniqueUserMiddleware implements NestMiddleware {
     try {
       const result: Promise<UserPayloadTypeJwtReference[]> =
         await this.prisma.find(req.body);
-      if (result[0]) {
+      if (result[0] || result[2]) {
         throw new HttpException(
           'Account Already Exists',
           HttpStatus.BAD_REQUEST,
@@ -101,11 +107,14 @@ export class VerfiyUniqueUserMiddleware implements NestMiddleware {
 
 @Injectable()
 export class PasswordHasher implements NestMiddleware {
-  constructor(private passwordProvider: PasswordHashProvider) {}
+  private readonly bcrypt = bcrypt;
+  constructor(private passwordProvider: PasswordHashProvider) {
+    this.bcrypt = bcrypt;
+  }
   async use(req: Request, res: Response, next: NextFunction) {
     try {
       const body: RegisterBodyType = req.body;
-      const hashedPassword: string = bcrypt.hashSync(
+      const hashedPassword: string = this.bcrypt.hashSync(
         body.password,
         Number(process.env.BCRYPT_ROUNDS),
       );

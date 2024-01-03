@@ -1,5 +1,7 @@
 import {
   IsAlpha,
+  IsAlphanumeric,
+  IsDateString,
   IsEmail,
   IsNotEmpty,
   IsString,
@@ -34,12 +36,18 @@ export class RegisterBodyType {
   @IsString({ message: 'Incorrect Format on Email' })
   @IsEmail({}, { message: 'Invalid Email' })
   email: string;
+  @IsNotEmpty({ message: 'Username Required' })
+  @IsString({ message: 'Incorrect Format on Username' })
+  @IsAlphanumeric(null, {
+    message: 'Must Contain Only Letters and Numbers',
+  })
+  username: string;
 }
 export class LoginBodyType {
-  @IsEmail({}, { message: 'Invalid Email' })
-  @IsString({ message: 'Invalid format on Email' })
-  @IsNotEmpty({ message: 'Email Required' })
-  email: string;
+  @IsAlphanumeric(null, { message: 'Must Contain Only Letters and Numbers' })
+  @IsString({ message: 'Invalid format on Username' })
+  @IsNotEmpty({ message: 'Username Required' })
+  username: string;
   @IsString({ message: 'Invalid Format on Password' })
   @IsNotEmpty({ message: 'Password Required' })
   password: string;
@@ -51,10 +59,22 @@ export type UserPayloadTypeJwtReference = {
   last_name: string;
   email: string;
   password: string;
+  username: string;
 };
 
 export class JwtTokenType {
-  @IsString({ message: 'Invalid Format on Token' })
+  @IsString({ message: 'Invalid Format on Token: Expected A String Format' })
   @IsNotEmpty({ message: 'Token Required' })
   token: string;
+}
+
+export class InstanceOfTokenExpType {
+  @IsString({ message: 'Invalid Format on Token: Expected A String Format' })
+  @IsNotEmpty({ message: 'Token Required' })
+  token: string;
+  @IsDateString(
+    {},
+    { message: 'Invalid Format on Date: Expected A Date Format' },
+  )
+  expiration_time: Date;
 }
