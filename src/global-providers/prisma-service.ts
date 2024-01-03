@@ -54,4 +54,7 @@ export class PrismaService {
     });
     return await this.prisma.blacklistJwt.findMany();
   }
+  async findAllJwt(): Promise<InstanceOfTokenExpType[]> {
+    return await this.prisma.blacklistJwt.findMany();
+  }
 }
