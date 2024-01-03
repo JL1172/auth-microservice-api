@@ -49,4 +49,10 @@ export class PrismaService {
   async insertJwt(jwt: InstanceOfTokenExpType): Promise<void> {
     await this.prisma.blacklistJwt.create({ data: jwt });
   }
+  async removeExpiredJwt(): Promise<any> {
+    await this.prisma.blacklistJwt.deleteMany({
+      where: { expiration_time: { lt: new Date() } },
+    });
+    return await this.prisma.blacklistJwt.findMany();
+  }
 }

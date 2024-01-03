@@ -22,7 +22,9 @@ async function reset_seed_data(): Promise<void> {
         if (count === 0) {
           clearInterval(intervalId);
           await prisma.user.deleteMany();
+          await prisma.blacklistJwt.deleteMany();
           await prisma.$executeRaw`ALTER SEQUENCE "User_id_seq" RESTART WITH 1;`;
+          await prisma.$executeRaw`ALTER SEQUENCE "BlacklistJwt_id_seq" RESTART WITH 1;`;
           console.log(
             chalk.green('All data has been deleted, exiting process now'),
           );

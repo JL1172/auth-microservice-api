@@ -39,9 +39,11 @@ import {
   DecodedJwtHolder,
   FinalizedPayloadProvider,
 } from './user-auth/services/providers/logout-provider';
+import { ScheduleModule } from '@nestjs/schedule';
+import { QueryExpiredToken } from './cron/sql-query-job';
 
 @Module({
-  imports: [],
+  imports: [ScheduleModule.forRoot()],
   controllers: [AppController, UserAuthController],
   providers: [
     PrismaService,
@@ -52,6 +54,7 @@ import {
     JwtHolderProvider,
     DecodedJwtHolder,
     FinalizedPayloadProvider,
+    QueryExpiredToken,
   ],
 })
 export class AppModule implements NestModule {
