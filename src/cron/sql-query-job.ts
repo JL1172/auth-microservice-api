@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as chalk from 'chalk';
 import { PrismaService } from 'src/global-providers/prisma-service';
+import { InstanceOfTokenExpType } from 'src/user-auth/dtos/dtos';
 
 @Injectable()
 export class QueryExpiredToken {
@@ -12,10 +13,20 @@ export class QueryExpiredToken {
   @Cron(CronExpression.EVERY_HOUR)
   async queryExpiredToken(): Promise<void> {
     try {
+      const number_of_data: InstanceOfTokenExpType[] =
+        await this.prisma.findAllJwt();
+      const count_stat: number = number_of_data.length;
       await this.prisma.removeExpiredJwt();
+      const number_of_data_post: InstanceOfTokenExpType[] =
+        await this.prisma.findAllJwt();
+      const count_stat_post: number = number_of_data_post.length;
       this.logger.log(
-        chalk.white.bold(
-          '*  Background Worker: {sql-script executed: (cron job executed)}  *',
+        chalk(
+          `${chalk.blueBright('Background Worker')}: {${chalk.greenBright(
+            'cron job executed',
+          )}} {${chalk.yellowBright('stats:')} remaining: ${chalk.cyanBright(
+            count_stat_post,
+          )}, deleted: ${chalk.redBright(count_stat - count_stat_post)}}`,
         ),
       );
     } catch (err) {
