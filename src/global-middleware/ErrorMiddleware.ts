@@ -1,20 +1,24 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+} from '@nestjs/common';
+import { Request, Response } from 'express';
 
-@Injectable()
-export class ErrorMiddleware implements NestMiddleware {
-  use(req: Request, res: Response, next: NextFunction) {
-    next();
-  }
-  catch(
-    error: any,
-    res: Response,
-    req: Request, /*eslint-disable-line*/
-    next: NextFunction /*eslint-disable-line*/,
-  ) {
-    res.status(error.status || 500).json({
-      message: error.message || 'Error message: 500',
-      stack: error.stack,
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+    const status = exception.getStatus();
+    response.status(status).json({
+      statusCode: status,
+      message: exception.getResponse(),
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      method: request.method,
     });
   }
 }

@@ -1,12 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { ErrorMiddleware } from './global-middleware/ErrorMiddleware';
 import * as hpp from 'hpp';
 import * as cors from 'cors';
 import helmet from 'helmet';
 import { RateLimitMiddleware } from './global-middleware/RateLimitMiddleware';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth-module/auth.module';
+import { LoggerMiddleware } from './global-middleware/LoggerMiddleware';
 
 @Module({
   imports: [ScheduleModule.forRoot(), AuthModule],
@@ -17,8 +17,8 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
-        ErrorMiddleware,
         RateLimitMiddleware,
+        LoggerMiddleware,
         hpp(),
         cors(),
         helmet.contentSecurityPolicy(),
