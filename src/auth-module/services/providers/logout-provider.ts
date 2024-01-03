@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   InstanceOfTokenExpType,
   JwtDecodedType,
-} from 'src/user-auth/dtos/dtos';
+} from 'src/auth-module/dtos/dtos';
 
 @Injectable()
 export class DecodedJwtHolder {

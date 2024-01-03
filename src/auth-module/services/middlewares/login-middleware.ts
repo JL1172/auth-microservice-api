@@ -11,7 +11,7 @@ import { PrismaService } from 'src/global-providers/prisma-service';
 import {
   LoginBodyType,
   UserPayloadTypeJwtReference,
-} from 'src/user-auth/dtos/dtos';
+} from 'src/auth-module/dtos/dtos';
 import * as validator from 'validator';
 import {
   JwtBuilderProvider,

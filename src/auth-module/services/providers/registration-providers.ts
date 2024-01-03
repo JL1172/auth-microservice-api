@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/global-providers/prisma-service';
-import { RegisterBodyType } from 'src/user-auth/dtos/dtos';
+import { RegisterBodyType } from 'src/auth-module/dtos/dtos';
 
 @Injectable()
 export class PasswordHashProvider {

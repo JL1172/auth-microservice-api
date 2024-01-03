@@ -8,7 +8,7 @@ import { NextFunction, Request, Response } from 'express';
 import * as validator from 'validator';
 import { JwtHolderProvider } from '../providers/login-providers';
 import * as jwt from 'jsonwebtoken';
-import { JwtDecodedType } from 'src/user-auth/dtos/dtos';
+import { JwtDecodedType } from 'src/auth-module/dtos/dtos';
 import {
   DecodedJwtHolder,
   FinalizedPayloadProvider,

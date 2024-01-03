@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   JwtTokenType,
   UserPayloadTypeJwtReference,
-} from 'src/user-auth/dtos/dtos';
+} from 'src/auth-module/dtos/dtos';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
