@@ -1,11 +1,11 @@
 import {
   IsAlpha,
-  IsAlphanumeric,
   IsDateString,
   IsEmail,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
+  Matches,
   MinLength,
   ValidationOptions,
 } from 'class-validator';
@@ -38,13 +38,15 @@ export class RegisterBodyType {
   email: string;
   @IsNotEmpty({ message: 'Username Required' })
   @IsString({ message: 'Incorrect Format on Username' })
-  @IsAlphanumeric(null, {
-    message: 'Must Contain Only Letters and Numbers',
+  @Matches(/^(?=.*[a-zA-Z])(?=.*\d).+/, {
+    message: 'Must Contain Number and Letters',
   })
   username: string;
 }
 export class LoginBodyType {
-  @IsAlphanumeric(null, { message: 'Must Contain Only Letters and Numbers' })
+  @Matches(/^(?=.*[a-zA-Z])(?=.*\d).+/, {
+    message: 'Must Contain Number and Letters',
+  })
   @IsString({ message: 'Invalid format on Username' })
   @IsNotEmpty({ message: 'Username Required' })
   username: string;
@@ -77,4 +79,12 @@ export class InstanceOfTokenExpType {
     { message: 'Invalid Format on Date: Expected A Date Format' },
   )
   expiration_time: Date;
+}
+
+export class JwtDecodedType {
+  subject: number;
+  email: string;
+  full_name: string[];
+  iat: number;
+  exp: number;
 }

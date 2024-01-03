@@ -28,6 +28,17 @@ import {
   JwtHolderProvider,
   UserStorageProvider,
 } from './user-auth/services/providers/login-providers';
+import {
+  BlacklistTokenMiddleware,
+  LogoutSanitationMiddleware,
+  LogoutValidationMiddleware,
+  TokenScannerMiddleware,
+  VerifyTokenUnique,
+} from './user-auth/services/middlewares/logout-middleware';
+import {
+  DecodedJwtHolder,
+  FinalizedPayloadProvider,
+} from './user-auth/services/providers/logout-provider';
 
 @Module({
   imports: [],
@@ -39,6 +50,8 @@ import {
     UserStorageProvider,
     JwtBuilderProvider,
     JwtHolderProvider,
+    DecodedJwtHolder,
+    FinalizedPayloadProvider,
   ],
 })
 export class AppModule implements NestModule {
@@ -69,5 +82,14 @@ export class AppModule implements NestModule {
         CompareUserPassword,
       )
       .forRoutes('/api/auth/login');
+    consumer
+      .apply(
+        LogoutValidationMiddleware,
+        LogoutSanitationMiddleware,
+        VerifyTokenUnique,
+        TokenScannerMiddleware,
+        BlacklistTokenMiddleware,
+      )
+      .forRoutes('/api/auth/logout');
   }
 }

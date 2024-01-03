@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import {
+  InstanceOfTokenExpType,
+  JwtTokenType,
   LoginBodyType,
   RegisterBodyType,
   UserPayloadTypeJwtReference,
@@ -38,5 +40,13 @@ export class PrismaService {
     return await this.prisma.user.findUnique({
       where: { username: user.username },
     });
+  }
+  async findJwt(jwt: JwtTokenType): Promise<InstanceOfTokenExpType> {
+    return await this.prisma.blacklistJwt.findUnique({
+      where: { token: jwt.token },
+    });
+  }
+  async insertJwt(jwt: InstanceOfTokenExpType): Promise<void> {
+    await this.prisma.blacklistJwt.create({ data: jwt });
   }
 }

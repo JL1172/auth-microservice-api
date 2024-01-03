@@ -6,6 +6,8 @@ import {
 } from './services/providers/registration-providers';
 import { Response } from 'express';
 import { JwtHolderProvider } from './services/providers/login-providers';
+import { PrismaService } from 'src/global-providers/prisma-service';
+import { FinalizedPayloadProvider } from './services/providers/logout-provider';
 
 @Controller('api/auth')
 export class UserAuthController {
@@ -13,6 +15,8 @@ export class UserAuthController {
     private readonly third_party_create: CreateUserContainerProvider,
     private readonly passwordStorage: PasswordHashProvider,
     private readonly jwt_housing: JwtHolderProvider,
+    private readonly prisma: PrismaService,
+    private readonly finalized_payload: FinalizedPayloadProvider,
   ) {}
   @Post('register')
   async register(
@@ -24,7 +28,7 @@ export class UserAuthController {
       await this.third_party_create.add_user_to_db(body);
     res.status(201).json({
       message:
-        'Succesfully created user, remember to delete this feature later',
+        'SuccesSfully created user, remember to delete this feature later',
       data: result,
     });
   }
@@ -33,5 +37,11 @@ export class UserAuthController {
     res
       .status(200)
       .json({ message: 'Welcome back.', token: this.jwt_housing.readJwt() });
+  }
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response): Promise<any> {
+    const payload = this.finalized_payload.read_token();
+    await this.prisma.insertJwt(payload);
+    res.status(201).json({ message: 'Token Successfully Blacklisted' });
   }
 }
