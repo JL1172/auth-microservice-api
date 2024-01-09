@@ -6,10 +6,11 @@ import helmet from 'helmet';
 import { RateLimitMiddleware } from './global-middleware/RateLimitMiddleware';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth-module/auth.module';
-import { LoggerMiddleware } from './global-middleware/LoggerMiddleware';
+// import { LoggerMiddleware } from './global-middleware/LoggerMiddleware';
+import { WsModule } from './ws-module/ws.module';
 
 @Module({
-  imports: [ScheduleModule.forRoot(), AuthModule],
+  imports: [ScheduleModule.forRoot(), AuthModule, WsModule],
   controllers: [AppController],
   providers: [],
 })
@@ -18,7 +19,7 @@ export class AppModule implements NestModule {
     consumer
       .apply(
         RateLimitMiddleware,
-        LoggerMiddleware,
+        // LoggerMiddleware,
         hpp(),
         cors(),
         helmet.contentSecurityPolicy(),
