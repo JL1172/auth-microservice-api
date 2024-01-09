@@ -21,6 +21,11 @@ model User {
   @@unique([first_name, last_name])
 }
 
+model UsageLog {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now())
+}
+
 model BlacklistJwt {
   id              Int      @id @default(autoincrement())
   token           String   @unique

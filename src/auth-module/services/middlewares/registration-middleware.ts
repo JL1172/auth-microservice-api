@@ -78,6 +78,13 @@ export class VerfiyUniqueUserMiddleware implements NestMiddleware {
     next: NextFunction /*eslint-disable-line */,
   ) {
     try {
+      const countOfUsers: number = await this.prisma.findCount();
+      if (countOfUsers === 2) {
+        throw new HttpException(
+          'Contact Admin For Details',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       const result: Promise<UserPayloadTypeJwtReference[]> =
         await this.prisma.find(req.body);
       if (result[0] || result[2]) {

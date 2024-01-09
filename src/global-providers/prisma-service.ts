@@ -6,13 +6,17 @@ import {
   LoginBodyType,
   RegisterBodyType,
   UserPayloadTypeJwtReference,
-} from 'src/user-auth/dtos/dtos';
+} from 'src/auth-module/dtos/dtos';
 
 @Injectable()
 export class PrismaService {
   private readonly prisma = new PrismaClient();
   constructor() {
     this.prisma = new PrismaClient();
+  }
+  async findCount(): Promise<number> {
+    const countOfUsers: number = await this.prisma.user.count();
+    return countOfUsers;
   }
   async find(user: RegisterBodyType): Promise<any> {
     //!might be a problem
