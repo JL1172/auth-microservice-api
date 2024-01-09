@@ -14,6 +14,10 @@ export class PrismaService {
   constructor() {
     this.prisma = new PrismaClient();
   }
+  async findCount(): Promise<number> {
+    const countOfUsers: number = await this.prisma.user.count();
+    return countOfUsers;
+  }
   async find(user: RegisterBodyType): Promise<any> {
     //!might be a problem
     const emailResult: UserPayloadTypeJwtReference =
