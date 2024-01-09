@@ -28,12 +28,9 @@ export class EmailLogging {
         if (/login/.test(requestPath)) {
           const ipAddress: any =
             req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-          console.log('first option', ipAddress[0]);
-          console.log('type', typeof ipAddress);
-          console.log('second option', ipAddress.split(' ')[0]);
-          const url: string = `https://ipinfo.io/${
-            ipAddress.split(' ')[0]
-          }?token=b3dc7b1eccddf4`;
+          const ipAdd = ipAddress.split(' ')[0].replaceAll(',', '');
+          console.log('second option', ipAdd, ipAddress);
+          const url: string = `https://ipinfo.io/${ipAdd}?token=${process.env.IP_CONFIG_KEY}`;
           console.log('url', url);
           const location = await axios.get(url);
           const mailOptions: Record<string, string> = {
