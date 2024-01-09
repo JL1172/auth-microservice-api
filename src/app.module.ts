@@ -11,7 +11,7 @@ import { RateLimitMiddleware } from './global-middleware/RateLimitMiddleware';
 
 @Module({
   imports: [ScheduleModule.forRoot(), AuthModule, WsModule],
-  controllers: [AppController],
+  controllers: [AppController, AppController],
   providers: [],
 })
 export class AppModule implements NestModule {
