@@ -11,7 +11,7 @@ import rateLimit from 'express-rate-limit';
 export class RateLimitMiddleware implements NestMiddleware {
   private limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 50,
+    limit: 25,
     handler: (req, res) /*eslint-disable-line */ => {
       throw new HttpException(
         'Too Many Requests',

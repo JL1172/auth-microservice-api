@@ -12,7 +12,9 @@ export class LoggerMiddleware implements NestMiddleware {
       `(Method: ${req.method}) (Path: ${
         req.baseUrl
       }) (Timestamp: ${new Date().toISOString()}) (IP: ${
-        os.networkInterfaces().wlp48s0[0]?.address || 'N/A'
+        process.env.STATUS && process.env.STATUS === 'dev'
+          ? os.networkInterfaces().wlp48s0[0]?.address
+          : 'N/A'
       })`,
     );
     next();
