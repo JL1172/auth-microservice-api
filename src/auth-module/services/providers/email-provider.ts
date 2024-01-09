@@ -36,14 +36,27 @@ export class EmailLogging {
             to: email,
             subject: `Someone Signed In With Your Credentials ${new Date().toISOString()}`,
             text: `Content: Someone Signed In With Your Credentials. This email is automated to trigger whenever someone uses your credentials to change the testing files on the honeycomb-admin-dev-db repo, here are the details: 
-Timestamp: ${new Date().toISOString()}, City: ${
+Timestamp: ${new Date().toISOString()}
+City: ${
               location.data.bogon
                 ? 'Loopback Address (or localhost)'
                 : location.data.city
-            } Region: ${
+            } 
+Region: ${
               !location.data.region
                 ? 'Loopback Address (or localhost)'
                 : location.data.region
+            }
+IP: ${ipAdd}
+Location: ${
+              !location.data.loc
+                ? 'Loopback Address (or localhost)'
+                : location.data.loc
+            }
+Organization: ${
+              !location.data.org
+                ? 'Loopback Address (or localhost)'
+                : location.data.org
             }
 Notes: Ip information could be incorrect if user is utilizing Proxy, VPN, or manipulated headers. The latter is unlikely because this is an automated script. If this sign in was not from you, contact Admin.`,
           };
