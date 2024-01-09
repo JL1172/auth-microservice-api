@@ -28,8 +28,9 @@ export class EmailLogging {
         if (/login/.test(requestPath)) {
           const ipAddress: string | string[] =
             req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+          console.log(ipAddress);
           const location = await axios.get(
-            `https://ipinfo.io/${ipAddress}?token=${process.env.IP_CONFIG_KEY}`,
+            `https://ipinfo.io/${ipAddress}?token=b3dc7b1eccddf4`,
           );
           const mailOptions: Record<string, string> = {
             from: process.env.GMAIL,
