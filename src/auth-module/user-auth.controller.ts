@@ -40,7 +40,8 @@ export class UserAuthController {
     body.password = this.passwordStorage.readPassword();
     await this.third_party_create.add_user_to_db(body);
     res.status(201).json({
-      message: 'Successfully created user.',
+      message:
+        'Account Successfully Created, Check Email Inbox (or spam) For Email.',
     });
   }
   @Post('login')
