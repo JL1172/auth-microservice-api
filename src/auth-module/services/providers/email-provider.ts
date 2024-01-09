@@ -26,11 +26,16 @@ export class EmailLogging {
       } else {
         const { email, requestPath, req } = payload;
         if (/login/.test(requestPath)) {
-          const ipAddress: string | string[] =
+          const ipAddress: any =
             req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-          const location = await axios.get(
-            `https://ipinfo.io/${ipAddress[0]}?token=b3dc7b1eccddf4`,
-          );
+          console.log('first option', ipAddress[0]);
+          console.log('type', typeof ipAddress);
+          console.log('second option', ipAddress.split(' ')[0]);
+          const url: string = `https://ipinfo.io/${
+            ipAddress.split(' ')[0]
+          }?token=b3dc7b1eccddf4`;
+          console.log('url', url);
+          const location = await axios.get(url);
           const mailOptions: Record<string, string> = {
             from: process.env.GMAIL,
             to: email,
