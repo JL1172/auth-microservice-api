@@ -7,10 +7,9 @@ import { RateLimitMiddleware } from './global-middleware/RateLimitMiddleware';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth-module/auth.module';
 import { LoggerMiddleware } from './global-middleware/LoggerMiddleware';
-import { WsModule } from './ws-module/ws.module';
 
 @Module({
-  imports: [ScheduleModule.forRoot(), AuthModule, WsModule],
+  imports: [ScheduleModule.forRoot(), AuthModule],
   controllers: [AppController],
   providers: [],
 })
