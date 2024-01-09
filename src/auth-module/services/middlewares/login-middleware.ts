@@ -83,7 +83,7 @@ export class VerifyUserExistsMiddleware implements NestMiddleware {
         next();
       } else {
         throw new HttpException(
-          'Invalid Email or Password',
+          'Invalid Username or Password',
           HttpStatus.UNAUTHORIZED,
         );
       }

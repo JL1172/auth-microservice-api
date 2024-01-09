@@ -1,13 +1,17 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
-import { RegisterBodyType } from './dtos/dtos';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { EmailPayload, RegisterBodyType } from './dtos/dtos';
 import {
   CreateUserContainerProvider,
   PasswordHashProvider,
 } from './services/providers/registration-providers';
-import { Response } from 'express';
-import { JwtHolderProvider } from './services/providers/login-providers';
+import { Request, Response } from 'express';
+import {
+  JwtHolderProvider,
+  UserStorageProvider,
+} from './services/providers/login-providers';
 import { PrismaService } from 'src/global-providers/prisma-service';
 import { FinalizedPayloadProvider } from './services/providers/logout-provider';
+import { EmailLogging } from './services/providers/email-provider';
 
 @Controller('api/auth')
 export class UserAuthController {
@@ -17,12 +21,22 @@ export class UserAuthController {
     private readonly jwt_housing: JwtHolderProvider,
     private readonly prisma: PrismaService,
     private readonly finalized_payload: FinalizedPayloadProvider,
+    private readonly user: UserStorageProvider,
+    private readonly emailLogger: EmailLogging,
   ) {}
   @Post('register')
   async register(
     @Body() body: RegisterBodyType,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
+    const requestPath = req.url;
+    const payload: EmailPayload = {
+      email: body.email,
+      requestPath: requestPath,
+      req: req,
+    };
+    await this.emailLogger.draftEmail(payload);
     body.password = this.passwordStorage.readPassword();
     await this.third_party_create.add_user_to_db(body);
     res.status(201).json({
@@ -30,7 +44,18 @@ export class UserAuthController {
     });
   }
   @Post('login')
-  async login(@Res({ passthrough: true }) res: Response): Promise<any> {
+  async login(
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ): Promise<any> {
+    const { email } = this.user.readUser();
+    const requestPath = req.url;
+    const payload: EmailPayload = {
+      email: email,
+      requestPath: requestPath,
+      req: req,
+    };
+    await this.emailLogger.draftEmail(payload);
     res
       .status(200)
       .json({ message: 'Welcome back.', token: this.jwt_housing.readJwt() });

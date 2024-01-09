@@ -9,6 +9,7 @@ import {
   MinLength,
   ValidationOptions,
 } from 'class-validator';
+import { Request } from 'express';
 
 export class RegisterBodyType {
   @IsNotEmpty({ message: 'First Name Required' })
@@ -87,4 +88,14 @@ export class JwtDecodedType {
   full_name: string[];
   iat: number;
   exp: number;
+}
+
+export class EmailPayload {
+  @IsNotEmpty({ message: 'Email Required' })
+  @IsEmail({}, { message: 'Invalid Email Format' })
+  email: string;
+  @IsNotEmpty({ message: 'Request Path Required' })
+  requestPath: string;
+  @IsNotEmpty({ message: 'Request Body Required' })
+  req: Request;
 }

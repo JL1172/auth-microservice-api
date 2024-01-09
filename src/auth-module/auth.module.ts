@@ -34,6 +34,7 @@ import {
   TokenScannerMiddleware,
   VerifyTokenUnique,
 } from './services/middlewares/logout-middleware';
+import { EmailLogging } from './services/providers/email-provider';
 
 @Module({
   controllers: [UserAuthController],
@@ -47,6 +48,7 @@ import {
     DecodedJwtHolder,
     FinalizedPayloadProvider,
     QueryExpiredToken,
+    EmailLogging,
   ],
 })
 export class AuthModule implements NestModule {
