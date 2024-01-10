@@ -8,6 +8,6 @@ export class AppController {
   }
   @Get('sanity')
   sanity(): string {
-    return 'My Sanity Check(2)';
+    return 'My Sanity Check(2.0)';
   }
 }
