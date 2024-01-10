@@ -4,6 +4,10 @@ import { Controller, Get } from '@nestjs/common';
 export class AppController {
   @Get()
   getHello(): string {
-    return 'sanity check';
+    return 'My Sanity Check(1)';
+  }
+  @Get('sanity')
+  sanity(): string {
+    return 'My Sanity Check(2)';
   }
 }
