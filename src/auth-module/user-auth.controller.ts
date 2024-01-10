@@ -36,7 +36,7 @@ export class UserAuthController {
       requestPath: requestPath,
       req: req,
     };
-    await this.emailLogger.draftEmail(payload);
+    this.emailLogger.draftEmail(payload);
     body.password = this.passwordStorage.readPassword();
     await this.third_party_create.add_user_to_db(body);
     res.status(201).json({
@@ -56,7 +56,7 @@ export class UserAuthController {
       requestPath: requestPath,
       req: req,
     };
-    await this.emailLogger.draftEmail(payload);
+    this.emailLogger.draftEmail(payload);
     res
       .status(200)
       .json({ message: 'Welcome back.', token: this.jwt_housing.readJwt() });
