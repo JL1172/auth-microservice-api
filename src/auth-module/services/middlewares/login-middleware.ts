@@ -18,7 +18,7 @@ import {
   JwtHolderProvider,
   UserStorageProvider,
 } from '../providers/login-providers';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class LoginBodyValidationMiddleware implements NestMiddleware {

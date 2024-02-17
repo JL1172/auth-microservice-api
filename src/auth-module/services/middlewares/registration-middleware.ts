@@ -11,7 +11,7 @@ import { plainToClass } from 'class-transformer';
 import * as validator from 'validator';
 import { PrismaService } from 'src/global-providers/prisma-service';
 import { PasswordHashProvider } from '../providers/registration-providers';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class BodyValidationMiddleware implements NestMiddleware {
