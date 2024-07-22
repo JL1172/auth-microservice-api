@@ -25,4 +25,4 @@ So far, this API has:
 - body validation
 - body sanitation
 - user uniqueness verification
-- verify email 
+- verify email (see nodespaceapi for crm for guidance)
