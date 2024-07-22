@@ -18,3 +18,11 @@ So far, this API has:
 - Authentication and authorization feature
 - Cron jobs which expel extraneous data from the database.
 
+## Register Endpoint
+
+- ratelimit
+- ip blacklisting and watchlisting
+- body validation
+- body sanitation
+- user uniqueness verification
+- verify email 
