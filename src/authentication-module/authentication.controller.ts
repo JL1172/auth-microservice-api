@@ -1,9 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 
-@Controller()
+@Controller('auth')
 export class AuthenticationController {
-  @Get('/auth-health-check')
+  @Get('/health-check')
   public healthCheck(): string {
     return 'health check verified';
+  }
+  @Post('/register')
+  public register(): string {
+    return 'register endpoint';
   }
 }
