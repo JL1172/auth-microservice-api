@@ -1,7 +1,10 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationErrorHandler } from './providers/error';
-import { RegisterRateLimiter } from './middleware/register';
+import {
+  RegisterRateLimiter,
+  ValidateRegisterBody,
+} from './middleware/register';
 
 @Module({
   imports: [],
@@ -10,6 +13,8 @@ import { RegisterRateLimiter } from './middleware/register';
 })
 export class AuthenticationModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RegisterRateLimiter).forRoutes('/auth/register');
+    consumer
+      .apply(RegisterRateLimiter, ValidateRegisterBody)
+      .forRoutes('/auth/register');
   }
 }
