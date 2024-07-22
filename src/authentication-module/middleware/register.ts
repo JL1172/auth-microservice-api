@@ -4,7 +4,7 @@
 //sanitize
 //validate user is unique
 
-import { HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
+import { HttpStatus, Injectable, Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import * as rateLimit from 'express-rate-limit';
 import { AuthenticationErrorHandler } from '../providers/error';
@@ -14,7 +14,7 @@ export class RegisterRateLimiter implements NestMiddleware {
   constructor(private readonly error: AuthenticationErrorHandler) {}
   private readonly ratelimit = rateLimit.rateLimit({
     windowMs: 1000 * 15 * 60,
-    limit: 2, //this might be too generous but can reeval
+    limit: 15, //this might be too generous but can reeval
     handler: () => {
       this.error.reportHttpError(
         'Too Many Registration Attempts.',
@@ -26,3 +26,5 @@ export class RegisterRateLimiter implements NestMiddleware {
     this.ratelimit(req, res, next);
   }
 }
+
+
